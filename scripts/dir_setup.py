@@ -63,9 +63,8 @@ def create_base_readme(search_path, course_folder_name, course_name, course_desc
 
 	base_readme_text = f'''
 # {course_name.upper()}
-----
 {course_desc}
----
+----
 - {LEC_FOLDER_NAME}: handwritten, markdown, tex, and pdf versions of lecture notes
 - {PROJ_FOLDER_NAME}: projects and assignments
 - {TEST_FOLDER_NAME}: quizzes, tests, and assessment type stuff'''
