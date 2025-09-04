@@ -1,5 +1,4 @@
 # School Stuff
-----
 School Repo for year 4/5
 ----
 - main: actual course notes, projects, etc.
