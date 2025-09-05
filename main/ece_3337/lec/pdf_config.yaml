@@ -1,0 +1,16 @@
+
+title: "ECE 3337"
+subtitle: "Electronic Circuits"
+author: "Arnav Goyal"
+date: "2025-2026"
+toc: true
+numbersections: true
+fontsize: 12pt
+mainfont: "TeX Gyre Pagella"
+monofont: "JetBrains Mono"
+header-includes:
+  - \input{../../../assets/preamble.tex}
+  - \usepackage{etoolbox}
+  - \preto{\tableofcontents}{\clearpage}
+  - \apptocmd{\tableofcontents}{\clearpage}{}{}
+
