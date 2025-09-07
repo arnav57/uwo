@@ -67,6 +67,7 @@ $$
 
 In this case, when guessing that our diode is forward-biased, our $i_D > 0$, so our guess was correct. And the circuit operates as we guessed with 4.3 mA flowing through it
 If we assume that the diode is reverse-biased, we must validate that $v_D < 0.7$
+
 ### Biasing & Non-Linear Elements
 
 Since we are often dealing with non-linear elements in this course, a big part is modelling how they respond to **small signals**
@@ -203,3 +204,4 @@ Now with a bunch under our belt we can create a basic flowchart for diode circui
 3. Find small-signal resistance $r_D = \frac{V_T}{i_D}$
 4. AC analysis, replcae forward biased diodes with a resistor $r_D$ and reverse-biased with open circuits
 5. Combine DC and AC analysis answers for the total voltages
+
