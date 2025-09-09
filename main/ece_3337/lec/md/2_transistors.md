@@ -272,7 +272,7 @@ Now we can take a look at the characteristics and conditions for each state abov
 | Operating Region | Condition (NPN) | Condition (PNP) | Current Flow |
 | --- | --- | --- | --- |
 | Cutoff | $v_E > v_B$ and $v_C > v_B$ | $v_B > v_E$ and $v_B > v_C$ | |
-| Active | $v_E < v_B < v_C$ |  $v_E > v_B > v_C$ | |
+| Active | $v_E < v_B < v_C$ |  $v_E > v_B > v_C$ | $i_C = \beta i_B$ and $i_C = \frac{\beta}{1 + \beta} i_E$ |
 | Reverse-Active | $v_E > v_B > v_C$ | $v_E < v_B < v_C$ | |
-| Saturation | $v_E > v_B$ and $v_C > v_B$ | $v_B > v_E$ and $v_B > v_C$ ||
+| Saturation | $v_B > v_E$ and $v_B > v_C$ | $v_E > v_B$ and $v_C > v_B$ ||
 
