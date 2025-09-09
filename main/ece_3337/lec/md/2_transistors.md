@@ -54,6 +54,7 @@ Note that the gate of a FET does not accept any current, in other words $i_G = 0
 Lets start with a quick example of DC analysis with a NMOS amplifier, for this problem we will assume the following
 
  -  $k = 2 \,$  $\frac{\text{mA}}{\text{V}^2}$
+ -  $V_A = 100$ V
  -  $v_{th} = 1$ V
  -  $R_1$ = 10M
  -  $R_2$ = 5M
@@ -126,7 +127,7 @@ This means that we have found the DC Biasing point of our MOSFET, and since our 
 
 There are two versions of the small-signal model of a MOSFET, the \kw{pi-model} and the \kw{T-model}. Both are equivalent, but analysis might be easier with one rather than another.
 
-These models require two parameters for full use with the early-effect resistance:
+These models require two parameters for full use with the early-effect resistance $r_o$, in problems where we neglect it, we can replace this resistor with an open-circuit:
 
 $$
 g_m = \frac{2i_D}{v_{GS} - v_{th}}
@@ -143,6 +144,135 @@ The Pi Model is shown below
 	\draw (GATE)++(3,0) to[open, v=$v_{GS}$] ++(0,-3) -| ++(1,-0.5) node[ocirc, label=below:S] (SOURCE) {};
 	\draw (SOURCE)++(0,0.5) to ++(1,0) to[controlled current source, invert, l_=$g_m v_{GS}$] ++(0, 3) to ++(5,0) node[ocirc, label=above right:D](DRAIN){};
 	\draw (DRAIN)++(-2,0) to[resistor, l=$r_o$] ++(0, -3) to[short] ++(-3,0);
+\end{circuitikz} \end{center}
+
+The T-model is also shown here:
+
+\begin{center} \vspace{2cm} \begin{circuitikz}[american]
+	\draw (0,0) node[ocirc, label=left:G] (GATE) {} to[short, i=$i_G$] ++(3,0);
+	\draw (GATE)++(3,0) to[resistor, l=$\frac{1}{g_m}$] ++(0,-3) to ++(0,-1) node[ocirc, label=below:S] (SOURCE) {};
+	\draw (GATE)++(3,3) to[controlled current source, l=$g_m v_{GS}$] ++(0,-3);
+	\draw (GATE)++(3,4) node[ocirc, label=above:D] (DRAIN) {} to ++(0,-1);
+	\draw (DRAIN)++(0,-1) to ++(3,0) to[resistor, l_=$r_o$] ++(0,-6) to ++(-3,0);
+\end{circuitikz} \end{center}
+
+### Example: Small Signal Operation of a MOSFET
+
+Lets continue our previous example, extending it to include small signal operation. Recall that we found the following bias point after DC analysis
+
+- $i_D = 1$ mA
+- $v_{GS} = 2$ V
+
+We always start by finding the small signal parameters $g_m$ and $r_o$
+
+$$
+g_m = \frac{2i_D}{v_{GS} - v_{th}} = \frac{2m}{2 - 1} = 2 \frac{\text{mA}}{\text{V}}
+$$
+$$
+r_o = \frac{V_A}{i_D} = \frac{100}{1m} = 100 k \Omega
+$$
+
+Now we can use either model to analyze the circuit during AC fluctuations, this involves replacing all caps with short-circuits. We will be using the $\pi$-model for this example
+
+\begin{center} \vspace{2cm} \begin{circuitikz}[american]
+
+	% PI MODEL
+	\draw (0,0) node[ocirc, label=above left:G] (GATE) {} to ++(3,0);
+	\draw (GATE)++(3,0) to[open, v=$v_{GS}$] ++(0,-3) -| ++(1,-0.5) node[ground, label=left:S] (SOURCE) {};
+	\draw (SOURCE)++(0,0.5) to ++(1,0) to[controlled current source, invert, l_=$g_m v_{GS}$] ++(0, 3) to ++(8,0) node[ocirc, label=above right:D](DRAIN){};
+	\draw (DRAIN)++(-5,0) to[resistor, l=$r_o$] ++(0, -3) to[short] ++(-3,0);
+
+	% ACUTAL AMPLIFIER
+	\draw (GATE) to[short] ++(-1,0) to[resistor, l=$R_{\text{sig}}$] ++(-3,0) to[vsourcesin, v=$v_s$] ++(0,-3.5) node[ground]{};
+	\draw (GATE)++(-1,0) to[resistor, l=$R_1 || R_2$] ++(0, -3.5) node[ground] {};
+	\draw (DRAIN)++(-3,0) to[resistor, l=$R_D$] ++(0,-3.5) node[ground] {};
+	\draw (DRAIN)++(-1,0) to[resistor, l=$R_L$, i=$i_o$, v=$v_o$] ++(0,-3.5) node[ground] {};
 
 \end{circuitikz} \end{center}
+
+Now lets start by finding in input and output resistance $R_{\text{in}}$ and $R_{\text{out}}$ Usually there are arrows to denote where each starts from, in this case our input resistance
+starts from after $R_{\text{sig}}$ and our output resistance starts before $R_L$.
+
+This gives
+
+$$
+R_{\text{in}} = R_1 || R_2
+$$
+$$
+R_{\text{out}} = r_o || R_D
+$$
+
+Next lets find the signal-voltage to gate-source voltage ratio, this is a simple voltage divider
+
+$$
+v_{GS} = \frac{R_1 || R_2}{R_1 || R_2 + R_{\text{sig}}} \cdot v_s = \frac{R_\text{in}}{R_{\text{in}} + R_{\text{sig}}} \cdot v_s
+$$
+$$
+\frac{v_{GS}}{v_s} = \frac{R_\text{in}}{R_{\text{in}} + R_{\text{sig}}}
+$$
+
+Next lets fine the output voltage (voltage across $R_L$) to gate-source voltage ratio, We know that we can group the three resistors into one, and thus the current flowing through all three must add up to $g_m v_{GS}$
+This gives us our expression
+
+$$
+v_o = 0 - i_D \cdot \left( r_o || R_D || R_L \right) = - g_m v_{GS} \cdot \left( r_o || R_D || R_L \right)
+$$
+$$
+\frac{v_o}{v_{GS}} = -g_m \left( r_o || R_D || R_L \right)
+$$
+
+Altogether we can find the total signal to output voltage gain, by combining the gains of both stages above. This gives us the total-ac-gain of the amplifier.
+$$
+\frac{v_o}{v_s} = \frac{v_o}{v_{GS}} \cdot \frac{v_{GS}}{v_s} = -g_m \left( r_o || R_D || R_L \right) \cdot \frac{R_\text{in}}{R_{\text{in}} + R_{\text{sig}}}
+$$
+
+### The BJT
+
+The BJT is the other type of transistor, it functionals similarly to the MOSFET, except that it a current-controlled switch, it also has different terminal names.
+
+- The \kw{Base, B} of a BJT acts like the Gate of a MOSFET
+- The \kw{Collector, C} of a BJT acts like the Drain of a MOSFET
+- The \kw{Emitter, E} of a BJT acts like the Source of a MOSFET
+
+The BJT also comes in two flavours (NPN, and PNP). The circuit symbols for each is shown below. Note that the terminal with the arrow is always the Emitter, and NPN can be distinguished by remebering it means 
+that the arrow is "not-poiting inwards"
+
+\begin{center}\vspace{2cm}\begin{circuitikz}
+	\draw (0,0) node[npn](NMOS){NPN};
+	\draw (5,0) node[pnp](PMOS){PNP};
+	% terminal labels
+	\draw (NMOS.B) node[label=left:Base]{};
+	\draw (PMOS.B) node[label=left:Base]{};
+	\draw (NMOS.E) node[label=below:Emitter]{};
+	\draw (PMOS.E) node[label=above:Emitter]{};
+	\draw (NMOS.C) node[label=above:Collector]{};
+	\draw (PMOS.C) node[label=below:Collector]{};
+\end{circuitikz}\end{center}
+
+Also note that the base actually accepts a current this time, the base-current $i_B$ flows into the base for NPN, and out of the base for PNP BJTs, such that the below is always held true
+$$
+i_B + i_C = i_E
+$$
+
+### Operating Regions of a BJT
+
+Like with MOSFETS, the BJT is also a non-linear device. The BJT is literally made up of two diodes, so the operating region depends on the biasing of the \kw{Emitter-Base Junction (EBJ)}
+abd the \kw{Collector-Base Junction (CBJ)}. A short table is provided below
+
+| Operating Region | CBJ Biasing | EBJ Biasing |
+| --- | --- | --- |
+| Cutoff | Reverse | Reverse |
+| Active | Reverse | Forward |
+| Reverse-Active | Forward | Reverse |
+| Saturation | Active | Active |
+
+Note that the Active region for BJT is the desired region for amplifiers, the saturation mode in BJTs is not similar to the saturation region for MOSFETs
+Now we can take a look at the characteristics and conditions for each state above
+
+| Operating Region | Condition (NPN) | Condition (PNP) | Current Flow |
+| --- | --- | --- | --- |
+| Cutoff | $v_E > v_B$ and $v_C > v_B$ | $v_B > v_E$ and $v_B > v_C$ | |
+| Active | $v_E < v_B < v_C$ |  $v_E > v_B > v_C$ | |
+| Reverse-Active | $v_E > v_B > v_C$ | $v_E < v_B < v_C$ | |
+| Saturation | $v_E > v_B$ and $v_C > v_B$ | $v_B > v_E$ and $v_B > v_C$ ||
 
