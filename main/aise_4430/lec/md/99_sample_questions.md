@@ -149,22 +149,22 @@ Each transmits 10% of the time, this is given from the question
 3. The probability that $n$ users out of all $m$ users are simultaneously transmitting on a link, when each user has a $p$ chance of transmitting is
 
 $$
-P_n = m \choose n \times p^n \times (1-p)^{m-n}
+P_n = \binom{m}{n} \times p^n \times (1-p)^{m-n}
 $$
 
 Where,
 
 $$
-m \choose n = \frac{n!}{k! \cdot (n-k)!}
+\binom{n}{k} = \frac{n!}{k! \cdot (n-k)!}
 $$
 
 The probablity that there are 10 users out of 15 transmitting simultaneously is given by the below expression. For part c) we suppose 120 users total, what is the probabiliity that 55 are transmitting at once
 
 $$
-P_{10} = 120 \choose 55 \times (0.1)^{55} \times (0.9)^{120-55}
+P_{10} = \binom{120}{55} \times (0.1)^{55} \times (0.9)^{120-55}
 $$
 
 the chance that there are 55 or more users transmitting is
 $$
-1 - \sum_{n=0}^{55} 120 \choose n \cdot (0.1)^n \cdot (0.9)^{120-n}
+1 - \sum_{n=0}^{55} \binom{120}{n} \cdot (0.1)^n \cdot (0.9)^{120-n}
 $$
