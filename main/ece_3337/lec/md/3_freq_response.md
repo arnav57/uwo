@@ -129,3 +129,7 @@ $$
 
 
 
+
+MOS BJT (1Q, or 2Q)
+
+DC analysis + small signal model (Rin Rout, gains, fH fL,)
