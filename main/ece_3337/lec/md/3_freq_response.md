@@ -127,9 +127,33 @@ $$
 $$
 
 
+### Unity Gain Frequency
 
+Another way to measure the HF operationg of a transistor amplifier is the \kw{unity gain frequency $f_T$}, this is also known as the \kw{transition frequency}. Unsurprisingly this is defined
+as the frequency at which the short-circuit current gain of the common-source or common-emitter amplifier becomes unity (1) 
 
+The formulas are given below for the MOSFET and BJT respectively. The higher this value, the better the amplifier.
 
-MOS BJT (1Q, or 2Q)
+\begin{equation}
+f_T = \frac{g_m}{2\pi \left( C_{gs} + C_{gd} \right)}
+\end{equation}
 
-DC analysis + small signal model (Rin Rout, gains, fH fL,)
+\begin{equation}
+f_T = \frac{g_m}{2\pi \left( C_{\pi} + C_{\mu} \right)}
+\end{equation}
+
+### Source Exchange
+
+Often times during HF analysis we want as simple of a circuit as possible, so we can easily deal with things. In order to do this
+we put a box around the small signal model of a transistor, and lump together the base/gate side, and the load side. into its own elements
+This will be shown in the examples later in this chapter.
+
+### Millers Theorem
+
+For the common source amplifier, calculating the HF pole due to $C_{gd}$ is challenging. So we introduce
+\kw{Millers Theorem} which helps us to deal with the bridging capacitances such as $C_{gd}$ and $C_{\mu}$.
+
+The basic idea of Millers Theorem comes into play when we have some capacitor $Z$, we can essentially break it up into
+two separate capacitances $Z_1$ and $Z_2$.
+
+After this  is done, you can use \oct on both sub-circuits to find the resistance seen by each cap, and add them together at the end.

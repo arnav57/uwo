@@ -276,3 +276,28 @@ Now we can take a look at the characteristics and conditions for each state abov
 | Reverse-Active | $v_E > v_B > v_C$ | $v_E < v_B < v_C$ | |
 | Saturation | $v_B > v_E$ and $v_B > v_C$ | $v_E > v_B$ and $v_C > v_B$ ||
 
+### Current Rules of a BJT
+
+Since the base of a BJT permits current flow, often the voltage divider at the base is now actually a current divider, this is easy to deal with by replacing it with a thevenin equivalent
+and contininuing the DC analysis. The current relation rules of a BJT in active mode is not easy to remember though, below is a short schematic representation of the equations
+
+\begin{center} \begin{circuitikz}[american]
+	\draw (0,0) node[npn](NMOS){};
+
+	\draw (NMOS.B)++(-1,0) to[short, i=$i_B$] (NMOS.B);
+	\draw (NMOS.E)++(0,-1) to[short, i_<=$(\beta + 1)i_B$] (NMOS.E);
+	\draw (NMOS.C)++(0, 1) to[short, i=$\beta i_B$] (NMOS.C);
+\end{circuitikz} \end{center}
+
+\begin{equation}
+i_E = i_B + i_C
+\end{equation}
+
+\begin{equation}
+i_C = \beta i_B
+\end{equation}
+
+\begin{equation}
+i_E = (\beta + 1) i_B
+\end{equation}
+
