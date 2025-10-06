@@ -16,7 +16,7 @@
 \definecolor{smoky}{gray}{0.85}
 
 \title{\textbf{ECE/MEDBIO 4455} \\ Biomedical Systems Analysis \\ \textit{MATLAB Investigation 1}}
-\author{Arnav \\ Helen \\ Yolanda}
+\author{Arnav Goyal - 251244778 \\ Helen Zhou - 251274567 \\ Yucong Wang - 251396651}
 
 
 \begin{document}
@@ -30,8 +30,6 @@
 \chapter*{Questions, Answers, \& Explanations}
 \addcontentsline{toc}{chapter}{Questions, Answers, \& Explanations}  % add to ToC
 
-This section features the questions, answers, and thought process for answering each of the questions. If you do not want to read our nonsensical rambling, and just want quick summary of answers, please see the \textbf{Answers Summarized} section
-
 \section*{Question 1a}
 \addcontentsline{toc}{section}{Question 1a}  % add to ToC
 
@@ -42,8 +40,8 @@ capacitor, $C_g$.
 The values attained from the fixed-tilt waveform from \textit{Hayashi et al.} are noted below
 
 \begin{itemize}
- 	\item $\text{tilt}_{d1}  = 0.65$ \%
- 	\item $\text{tilt}_{d2}  = 0.65$ \%
+ 	\item $\text{tilt}_{d1}  = 0.65$ 
+ 	\item $\text{tilt}_{d2}  = 0.65$
 	\item $t_{d1} = 10$ ms
 	\item $t_{d2} = 10$ ms
 	\item $E        = 40$ J
@@ -101,7 +99,9 @@ C_g = tau_g / R_meas % F
 
 Is the value you obtained for $C_g$ realistic? Cite evidence to support your response. 
 
-TODO
+Yes, our value for $C_g$ is realistic [1] shows values for $C_g$ in the same range (106-177) $\mu$ F. Our value for  from $C_g$ falls nicely within this range.
+
+[1] M. Kroll and C. Swerdlow, “Optimizing defibrillation waveforms for ICDS,” Journal of Interventional Cardiac Electrophysiology, vol. 18, no. 3, pp. 247–263, Jun. 2007. doi:10.1007/s10840-007-9095-z 
 
 \section*{Question 2a}
 \addcontentsline{toc}{section}{Question 2a}  % add to ToC
@@ -111,22 +111,9 @@ waveform} in the \textit{Hayashi et al.} case study, reverse engineer the DeFT R
 authors employed to tune the waveform by completing for following steps. State separate criteria to determine an optimal first-phase duration, $t_{d1}$, and an optimal second
 phase duration, $t_{d2}$.
 
-To determine the optimal first and second-phase durations we have to consider the purpose of each phase.
+\textbf{Optimal td1:} should be equal to the time required for the transmembrane voltage (Vm) to reach its peak value;
 
-\subsection*{The First-Phase}
-
-The \textbf{first-phase duration} $t_{d1}$ is intended to get the potential across the cell-membrane past the depolarization theshold such that depolarization can occur. If this depolarization threshold is not met the ICD becomes a fancy-paperweight that we can't use because it is implanted inside of someone.
-
-Furthermore, the first-phase must deliver enough energy as said above, but also not too much energy for the sake of battery-life, and out of consideration for the myocardium that will accept this stimulus. Too much energy will reduce battery life, and might damage the myocardium.
-
-Thus an optimal first-phase criteria for $t_{d1}$ would be to have it long enough till the membrane voltage peaks. 
-
-
-\subsection*{The Second-Phase}
-
-To goal of the \textbf{second-phase} (the negative voltage phase), is to remove all residual charge left on the myocardium after a stimulus is delivered. This means charging the capacitor $C_g$ to $-V_s$ and connecting it to the circuit for some time $t_{d2}$
-
-Once we have removed all of the residual charge, and the myocardium is at resting-potential once again we can end phase two. Thus an appropriate criteria for determining $t_{d2}$  is just long enough for the membrane voltage to go back to resting potential (0 V)
+\textbf{Optimal td2:} should be just long enough to return the transmembrane voltage from its peak back to the resting potential without causing significant hyperpolarization.
 
 
 \section*{Question 2b}
@@ -154,45 +141,7 @@ Before we write a MATLAB script, we should consider how we would approach this p
 	\item $E = 28.4$ J
 \end{itemize}
 
-\subsection*{Optimizing the First-Phase}
-
-This can be found analytically through solving for it, by only considering the first phase. This process is explained below
-
-Since the first phase is delivered through capactive discharge the, voltage across the cap is given by equation \ref{eq:3}, Where $V_s$ is the initial voltage across the capacitor $C_g$
-
-\begin{equation}
-	\label{eq:3}
-	V(t) = V_s \cdot \exp{\left( - \frac{t}{\tau_g} \right)}
-\end{equation}
-
-The circuit model of the resting-potential myocardium is shown below, here the cell membrane voltage is the voltage across the capacitor $V_m(t)$.
-
-
-\begin{center} \vspace{1cm} \begin{circuitikz}[american]
-		
-		\draw (0,0) node[ground]{} to[capacitor, v<=$V(t)$, l=$C_g$] (0,3);
-		\draw (0,3) to[resistor, l=$R_L$, -*] (3,3);
-		\draw (3,3) to[resistor, l=$R_\text{ext}$] (3,0) node[ground]{};
-		\draw (3,3) to[resistor, l=$R_i$] (6,3) to [capacitor, l=$C_m$, v=$V_m(t)$] (6,0) node[ground]{};
-		
-	\end{circuitikz} \vspace{1cm} \end{center}
-
-With this circuit in mind we can obtain the membrane voltage-time response $V_m(t)$ to the decaying exponential $V(t)$
-
-\begin{equation}
-	\label{eq:4}
-	V_m(t) = K \cdot \left[ \exp{\left( -\frac{t}{\tau_g} \right)} - \exp{\left( -\frac{t}{\tau_m} \right)} \right]
-\end{equation}
-
-Where,
-
-\[ \tau_g = (R_\text{ext} + R_L) \cdot C_g \]
-\[ \tau_m = R_i \cdot C_m\]
-\[ K = \frac{R_\text{ext}}{R_\text{ext} + R_L} \frac{V_s \tau_g}{\tau_g - \tau_m}\]
-
-Assuming all of the values above are known, we can solve for the optimal $t_{d1}$ by finding out when the membrane-voltage peaks. After this point if the cell has not depolarized then it will not depolarize as we have already reached the maximum.
-
-We obviously dont have all of these parameters, so what we need to do in MATLAB is try to solve equation \ref{eq:4} for $\tau_m$ such that the below holds true. This will give us our first $\tau_m$ value.
+so what we need to do in MATLAB is try to solve the below equation for $\tau_m$ Ths should give us our first $\tau_m$ value.
 
 \[
 V'_m(t_{d1}) = 0
@@ -271,7 +220,7 @@ This script finds that the best $\tau_m$ guess to optimize phase 1 is 2.4640 ms.
 
 To optimize the second phase we need to consider that the goal is to get the myocardium back to resting potential as fast as possible, without using too much energy. To do this its much more simple than phase 1, all we need to do is to ensure that the output response $V_m (t)$ goes to zero at a time $t_{d1} + t_{d2}$.
 
-In other words, we need to solve equation \ref{eq:4} for $\tau_m$ such that the below holds true.
+In other words, we need to solve the below for $\tau_m$ such that the below holds true.
 
 \[
 	V_m (t_{d1} + t_{d2}) = 0
@@ -350,9 +299,18 @@ The script finds that the best $\tau_m$ value to optimize phase 2 is 2.7270 ms. 
 \addcontentsline{toc}{section}{Question 2c}  % add to ToC
 
 Choose one of the values of $\tau_m$ obtained in part (b) to assume when tuning durations. Provide 
-at least two justifications for your selection. 
 
-TODO
+The two  reasons for choosing $\tau_m$ optimized for $t_{d2}$ are below.
+
+
+The plot of the membrane response for tau-m optimized for the  first phase leaves a higher residual voltage after the second phase. This is bad for two reasons.
+
+\begin{enumerate}
+	\item It means energy was wasted to get the membrane voltage lower than 0, during the repolarization phase of the stimulus, which will shorten battery life for 0 reasonable gain.
+	
+	\item Physiologically, the residual voltage across a membrane will make it more difficult for the next depolarization phase, this is because more time will be required to reach resting potential
+\end{enumerate}
+
 
 \section*{Question 3a}
 \addcontentsline{toc}{section}{Question 3a}  % add to ToC
@@ -502,7 +460,7 @@ The statistics I previously discussed are put in the below table for comparison,
 	\end{tabular}
 \end{table}
 
-For this patient the fixed-tilt waveform is preferable due to the higher peak voltage and the lower residual voltage the waveform possesses.
+For this patient the fixed-tilt waveform is preferable due to the higher peak voltage and the lower residual voltage the waveform possesses. Another reason we prefer the fixed-tilt is due to the fact that the tuned duration fails to repolarize the membrane
 
 
 \section*{Question 4a}
@@ -636,46 +594,5 @@ legend('Vg (TD)', 'Vm (TD)', 'Vg (FT)', 'Vm (FT)');
 
 hold off;
 \end{lstlisting}
-
-\chapter*{Answers Summarized}
-\addcontentsline{toc}{chapter}{Answers Summarized}  % add to ToC
-
-\textbf{1a)}
-\begin{itemize}
-	\item $\tau_g$ = 9.5254 ms
-	\item $C_g$ = 113.397 $\mu$F
-\end{itemize}
-
-\textbf{1b)}
-TODO
-
-\textbf{2a)}
-\begin{itemize}
-	\item An optimal $t_{d1}$ can be determined by figuring out how long it takes $V_m(t)$ to reach its peak voltage.
-	\item An optimal $t_{d2}$ can be determined by figuring out how long it takes $V_m(t)$ to reach zero after phase 2 stimulus is applied
-\end{itemize}
-
-\textbf{2b)}
-MATLAB Code, Explanations, and Plots can be found under \textbf{Questions, Answers, \& Explanations} section for this question
-\begin{itemize}
-	\item $\tau_m$ optimized for $t_{d1}$ is 2.4640 ms
-	\item $\tau_m$ optimized for $t_{d2}$ is 2.7270 ms
-\end{itemize}
-
-\textbf{2c)}
-TODO
-
-\textbf{3a)}
-The tuned-duration response is preferable for this patient. Explanations and Plots are provided in the corresponding \textbf{Questions, Answers, \& Explanations} section.
-
-\textbf{3b)}
-The fixed-tile response is preferable for this patient. Explanations and Plots are provided in the corresponding \textbf{Questions, Answers, \& Explanations} section.
-
-\textbf{4a)}
-Plots and MATLAB code are provided in the corresponding \textbf{Questions, Answers, \& Explanations} section.
-
-
-\textbf{4b)}
-Explanations, Plots, and MATLAB code are provided in the corresponding \textbf{Questions, Answers, \& Explanations} section.
 
 \end{document}
