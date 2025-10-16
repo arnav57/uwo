@@ -6,9 +6,8 @@
 ####
 #### Description:
 ####	This script accepts a TCP file transfer pcapng file exported as a CSV
-####	Each packet in this CSV is either the sender -> host, or host -> sender
-####	Only the sender -> host packets have the wireshark estimated "Win" value
-####	Once we have these we can plot this window value over time
+####	Each packet in this CSV is either the desired TCP, or something else which we dont care abt
+####	Once we have these TCP packets only we can plot this window value over time
 ####################################################################################################
 
 
