@@ -168,3 +168,50 @@ the chance that there are 55 or more users transmitting is
 $$
 1 - \sum_{n=0}^{55} \binom{120}{n} \cdot (0.1)^n \cdot (0.9)^{120-n}
 $$
+
+## Chapter 3
+
+content below is from Sample03 and Sample04
+
+## Problem 1
+
+Sample03 Problem I is way too long to type here, so just going to type the solution.
+
+a. Find the total average response time (w.o web-caching)
+
+From the question we see that the average access delay is
+
+$$
+T_\text{access} = \frac{\Delta}{1 - \Delta\beta}
+$$
+
+where $\Delta$ is the avg time of sending an object over the link, and $\beta$ is the number of requests to the link per second
+From the question the link rate is 2Mbps, the average object is 1Mb, and there are 1.5 req/s to the server. This gives
+
+$$
+\Delta = \frac{L}{R} = \frac{1 \text{Mb}}{2 \text{Mbps}} = 0.5
+$$
+
+$$
+T_\text{access} = \frac{0.5}{1 - 0.5 (1.5)} = 2 \text{sec}
+$$
+
+The total response time is the 2 sec above, plus the 2 sec internet delay given by the question, giving us a total 4 sec access delay.
+
+b. Now we consider the delay by adding a web cache, and assume the hit-rate is 0.35, so 0.65 of the requests go to the server.
+
+We just need to recalculate the access time with a the new $\beta$ value.
+
+$$
+\beta' = \beta \cdot 0.65 
+$$
+
+$$
+T_\text{access} = \frac{\Delta}{1 - \Delta\beta'} = \frac{0.5}{1 - 0.5\cdot\beta'} = 0.975 \text{sec}
+$$
+
+adding the same 2s internet delay we get a total access delay on a miss as 2.975 sec, and we can assume a 0 (negligible) delay for hits, this means we have to take the average now to get a total average response time of 1.93 seconds.
+
+$$
+T = 0.35 (0) + 0.65 (2.975) = 1.93 \text{sec}
+$$
