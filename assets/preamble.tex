@@ -3,6 +3,11 @@
 \usepackage{circuitikz}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{mathtools}
+
+%% EASY CEIL AND FLOOR - \floor*{arg}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 \geometry{
     paperwidth=960pt,
@@ -12,9 +17,17 @@
 
 %% COLORS
 \definecolor{purple}{HTML}{7F76DA}
+\definecolor{red}{HTML}{FF0000}
+\definecolor{blue}{HTML}{5555FF}
 
 %% KEYWORDS
 \newcommand{\kw}[1]{{{\bfseries\color{purple}{#1}\,}}}
+
+\newcommand{\red}[1]{ \textit{{\bfseries\color{red}{#1}\,}} }
+\newcommand{\blue}[1]{ \textit{{\bfseries\color{blue}{#1}\,}} }
+
+\newcommand{\question}{\red{Question$\colon$}}
+\newcommand{\answer}{\blue{Answer$\colon$}}
 
 %% PROPER MOSFETS
 \ctikzset{tripoles/mos style=arrows}
