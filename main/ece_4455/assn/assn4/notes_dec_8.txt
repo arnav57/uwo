@@ -1,0 +1,69 @@
+test_khoo_margins( periph delay 6.1, cerntral delay - 7.1, cardiac output L/s (0.05 because khoo halves the regular value) )
+- outputs gain margin
+- outputs time delay margin (in units that model uses, here its [sec])
+
+q2 asks to do:
+- can we manually obtain gain margin and phase margin (tdm) from nyquist/bode plots respectively
+- take this information (from nyquist plot at circitical dfreq), find gain margin, show that gain margin matches the onne script pulls out
+- will be marked to 3 sig figs (rounded)
+
+
+which of the two cases did we run? 6.1, 7.1, 0.05 is normal delay, half cardiac output
+does unstability come from long delay + half cardiac output, or only one of these?
+might want to comare  to healthy subject values, look at slides or run script with proper params
+
+
+q3
+something we CANNOT do in q2 is realistically separate factors that can change.
+changing delay and cardiac output by half is a random test, this might not mean this is what actaully changes
+francis paper does have patient data
+
+3a/b) verify the smallest value of G_F that makes a patient unstable with delta fixed at the avg value for a CHF patient with stable respiration
+3d) what is the prob that a randomly selected CHF patient wiht the unstable respiration will have a G_F > than value in 3b)
+
+test_francis_margins(G_F, delta) = [GM: 1.1442, TDM: 0.2783]
+
+in results section "Pathiophysiological components resulting to PB (pg 22.18)"
+first we study average CHF patient with resp control (G_F, delta) = (620 [L/min/atm], 0.4 [min]) mean values for heart patients with PROVEN stable breathing
+
+this question we have to prove we know what the GM and TDM mean. calculate the value that we can tolerate at MAX = G_F * GM, do the same for time delay delta
+MAX = delta * TDM. If a random CHF patient with unstable breathing, what are the odds that their gain is unstable, that their delay is unstable, which is more likely to happen?
+
+IF our groups of patients are charactierized IN HTE PAPER by mean + std/devn we imagine the PDF to be a guassian, the CDF is int (PDF) dx, where P(x <= x_o) = CDF(x_o) we use normcdf(x_0, mean, std_devn)
+
+WE NEED 1 - normcdf(x_0, mean, std_devn) because we need to test P(x >= x_0) = 1 - P(x <= x_0)
+
+std_devn vs standard error of the mean (SEM):
+
+SEM = std_devn / sqrt(N), where N is no. of samples. Paper presents SEM and N, so need to calculate std_devn
+
+which is more likely?
+
+q4 and a5 are a "pair"
+both are about trying to validate francis linear classifier using nyquist stability analysis as the standard. Relates to concept map
+Francis -> concerned about patients with heart failure, but doesnt measure cardiac output.
+
+validate_francis_fig3(min_fract_HF, randomize)
+
+min_fract_HF -> how much variability do our 300 patients hhave in the Q_c, in [0, 1]. The number we choose is the lower bound for the reduction in q_c by the normal value
+from thursday class, its about typical CHF patient has 80% of normal (set this field to 0.75 for q5) for q4 we pretend we believe francis' assumption that Q_C doesnt matter, so here we set it to 1.0. Here we train a classifier assuming Q_c doesnt matter
+
+randomize -> bool (0, 1)
+	if (1) -> non-deterministic sampling behaviour for patients
+	else -> uses prebuilt random seed (based on last 4 digits of StudentNo. q4 this should be 0, q5 this should be 1)
+
+returns a plot. blue/red ticks give stability according to nyquist criterion (they muight be swapped)
+black line is approximately the francis et al classifier.
+
+we must correct the slope/intercept such that we make a better classifier. After entinering slope/intercept. It prints out TPF and TNF.
+
+True Positive Fraction -> Positive means unstable breathing = No. of predicted positive patients / No. of patients who truly have the disease
+if TPF 64% then about 64% of people who have the disease are correctly classified, 65% are above line, 35% are below line visually
+
+True Negative Fraction -> Same logic as above. best possible value for TPF, TNF is 1.00
+easy to maximize TNF, but keeping both large at once is hard. here we should prioritize maximizing TPF
+
+q5
+
+use classifier from q4, set randomize to 1 (pick clsfr to 2 decimal places on slope/intercept)
+
